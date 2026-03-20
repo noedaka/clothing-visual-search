@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"io"
 
 	"github.com/noedaka/clothing-visual-search/backend/internal/model"
 )
@@ -14,11 +13,10 @@ type CategoryRepository interface {
 
 type ProductRepository interface {
 	Add(ctx context.Context, product *model.Product) (int, error)
-	GetByIDs(ctx context.Context, ids []int) ([]model.Product, error)
+	GetByIDs(ctx context.Context, IDs []int) ([]model.Product, error)
 }
 
 type ImageRepository interface {
-	Add(ctx context.Context, productID int, file io.Reader,
-		fileSize int64, filename, contentType string, isPrimary bool) error
-	GetByIDs(ctx context.Context, productIDs []int) ([]model.Image, error)
+	Add(ctx context.Context, productID int, imageData *model.ImageData) error
+	GetByID(ctx context.Context, ID int) ([]model.Image, error)
 }

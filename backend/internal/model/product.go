@@ -8,6 +8,11 @@ type Product struct {
 	CategoryID  int     `db:"category_id"`
 }
 
+type ProductWithImagesData struct {
+	Product           Product
+	ProductImagesData []ImageData
+}
+
 type ProductWithImages struct {
 	Product       Product
 	ProductImages []Image

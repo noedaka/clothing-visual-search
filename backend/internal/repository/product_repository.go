@@ -51,14 +51,14 @@ func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int, err
 	return id, nil
 }
 
-func (r *ProductRepo) GetByIDs(ctx context.Context, ids []int) ([]model.Product, error) {
-	if len(ids) == 0 {
+func (r *ProductRepo) GetByIDs(ctx context.Context, IDs []int) ([]model.Product, error) {
+	if len(IDs) == 0 {
 		return []model.Product{}, nil
 	}
 
-	placeholders := make([]string, len(ids))
-	args := make([]any, len(ids))
-	for i, id := range ids {
+	placeholders := make([]string, len(IDs))
+	args := make([]any, len(IDs))
+	for i, id := range IDs {
 		placeholders[i] = fmt.Sprintf("$%d", i+1)
 		args[i] = id
 	}
