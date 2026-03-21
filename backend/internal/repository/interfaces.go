@@ -18,5 +18,5 @@ type ProductRepository interface {
 
 type ImageRepository interface {
 	Add(ctx context.Context, productID int, imageData *model.ImageData) error
-	GetByID(ctx context.Context, ID int) ([]model.Image, error)
+	GetByIDs(ctx context.Context, IDs []int) ([]model.Image, error)
 }

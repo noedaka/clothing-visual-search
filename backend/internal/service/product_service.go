@@ -42,20 +42,27 @@ func (s *ProductServ) GetByIDs(ctx context.Context, IDs []int) ([]model.ProductW
 	if err != nil {
 		return nil, err
 	}
-
-	var prodsWithImages []model.ProductWithImages
-	for _, product := range products {
-		var prodWithImages model.ProductWithImages
-
-		images, err := s.imageRepo.GetByID(ctx, product.ID)
-		if err != nil {
-			return nil, err
-		}
-		prodWithImages.Product = product
-		prodWithImages.ProductImages = images
-
-		prodsWithImages = append(prodsWithImages, prodWithImages)
+	if len(products) == 0 {
+		return []model.ProductWithImages{}, nil
 	}
 
-	return prodsWithImages, nil
+	images, err := s.imageRepo.GetByIDs(ctx, IDs)
+	if err != nil {
+		return nil, err
+	}
+
+	imagesMap := make(map[int][]model.Image)
+	for _, img := range images {
+		imagesMap[img.ProductID] = append(imagesMap[img.ProductID], img)
+	}
+
+	result := make([]model.ProductWithImages, 0, len(products))
+	for _, product := range products {
+		result = append(result, model.ProductWithImages{
+			Product:       product,
+			ProductImages: imagesMap[product.ID],
+		})
+	}
+
+	return result, nil
 }

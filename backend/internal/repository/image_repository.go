@@ -81,12 +81,19 @@ func (r *ImageRepo) Add(
 	return nil
 }
 
-func (r *ImageRepo) GetByID(ctx context.Context, ID int) ([]model.Image, error) {
-	rows, err := r.db.QueryContext(ctx,
-		`SELECT id, product_id, object_key, is_primary
+func (r *ImageRepo) GetByIDs(ctx context.Context, IDs []int) ([]model.Image, error) {
+	if len(IDs) == 0 {
+		return []model.Image{}, nil
+	}
+
+	query := `
+		SELECT id, product_id, object_key, is_primary
 		FROM product_images
-		WHERE product_id = $1 ORDER BY product_id, is_primary DESC`,
-		ID)
+		WHERE product_id = ANY($1) ORDER BY product_id, is_primary DESC
+	`
+	args := []interface{}{IDs}
+
+	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,38 +115,3 @@ func (r *ImageRepo) GetByID(ctx context.Context, ID int) ([]model.Image, error) 
 
 	return images, nil
 }
-
-// func (r *ImageRepo) GetByIDs(ctx context.Context, IDs []int) ([]model.Image, error) {
-// 	if len(IDs) == 0 {
-// 		return []model.Image{}, nil
-// 	}
-
-// 	query := `
-// 		SELECT id, product_id, object_key, is_primary
-// 		FROM product_images
-// 		WHERE product_id = ANY($1) ORDER BY product_id, is_primary DESC
-// 	`
-// 	args := []interface{}{IDs}
-
-// 	rows, err := r.db.QueryContext(ctx, query, args...)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer rows.Close()
-
-// 	var images []model.Image
-// 	for rows.Next() {
-// 		var img model.Image
-// 		if err := rows.Scan(&img.ID, &img.ProductID, &img.ObjectKey, &img.IsPrimary); err != nil {
-// 			return nil, err
-// 		}
-
-// 		img.URL = r.getPublicURL(img.ObjectKey)
-// 		images = append(images, img)
-// 	}
-// 	if err = rows.Err(); err != nil {
-// 		return nil, err
-// 	}
-
-// 	return images, nil
-// }
