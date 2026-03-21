@@ -8,6 +8,7 @@ type Product struct {
 	CategoryID  int     `db:"category_id"`
 }
 
+// Добавить конструкторы?
 type ProductWithImagesData struct {
 	Product           Product
 	ProductImagesData []ImageData
