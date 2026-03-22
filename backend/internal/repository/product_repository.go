@@ -19,7 +19,7 @@ func NewProductRepo(db *sql.DB) *ProductRepo {
 	return &ProductRepo{db: db}
 }
 
-func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int, error) {
+func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int64, error) {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return 0, err
@@ -32,7 +32,7 @@ func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int, err
 		}
 	}()
 
-	var id int
+	var id int64
 	err = tx.QueryRowContext(ctx,
 		`INSERT INTO products 
 		(name, description, price, category_id)
@@ -51,7 +51,7 @@ func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int, err
 	return id, nil
 }
 
-func (r *ProductRepo) GetByIDs(ctx context.Context, IDs []int) ([]model.Product, error) {
+func (r *ProductRepo) GetByIDs(ctx context.Context, IDs []int64) ([]model.Product, error) {
 	if len(IDs) == 0 {
 		return []model.Product{}, nil
 	}

@@ -12,11 +12,11 @@ type CategoryRepository interface {
 }
 
 type ProductRepository interface {
-	Add(ctx context.Context, product *model.Product) (int, error)
-	GetByIDs(ctx context.Context, IDs []int) ([]model.Product, error)
+	Add(ctx context.Context, product *model.Product) (int64, error)
+	GetByIDs(ctx context.Context, IDs []int64) ([]model.Product, error)
 }
 
 type ImageRepository interface {
-	Add(ctx context.Context, productID int, imageData *model.ImageData) error
-	GetByIDs(ctx context.Context, IDs []int) ([]model.Image, error)
+	Add(ctx context.Context, productID int64, imageData *model.ImageData) error
+	GetByIDs(ctx context.Context, IDs []int64) ([]model.Image, error)
 }

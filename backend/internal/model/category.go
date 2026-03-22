@@ -1,6 +1,6 @@
 package model
 
 type Category struct {
-	ID   int    `db:"id"`
+	ID   int64  `db:"id"`
 	Name string `db:"name"`
 }

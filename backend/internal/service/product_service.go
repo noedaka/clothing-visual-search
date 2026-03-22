@@ -37,7 +37,7 @@ func (s *ProductServ) Add(ctx context.Context, product *model.ProductWithImagesD
 	return nil
 }
 
-func (s *ProductServ) GetByIDs(ctx context.Context, IDs []int) ([]model.ProductWithImages, error) {
+func (s *ProductServ) GetByIDs(ctx context.Context, IDs []int64) ([]model.ProductWithImages, error) {
 	products, err := s.productRepo.GetByIDs(ctx, IDs)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (s *ProductServ) GetByIDs(ctx context.Context, IDs []int) ([]model.ProductW
 		return nil, err
 	}
 
-	imagesMap := make(map[int][]model.Image)
+	imagesMap := make(map[int64][]model.Image)
 	for _, img := range images {
 		imagesMap[img.ProductID] = append(imagesMap[img.ProductID], img)
 	}
