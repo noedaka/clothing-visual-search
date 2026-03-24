@@ -15,3 +15,12 @@ type ProductService interface {
 	Add(ctx context.Context, product *model.ProductWithImagesData) error
 	GetByIDs(ctx context.Context, IDs []int64) ([]model.ProductWithImages, error)
 }
+
+type EmbeddingService interface {
+	GetEmbedding(
+		ctx context.Context,
+		image []byte,
+		imageFormat string,
+	) ([]float32, error)
+	Close() error
+}
