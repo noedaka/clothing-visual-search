@@ -3,11 +3,11 @@ package model
 import "io"
 
 type Image struct {
-	ID        int64  `db:"id"`
-	ProductID int64  `db:"product_id"`
-	ObjectKey string `db:"object_key"`
-	IsPrimary bool   `db:"is_primary"`
-	URL       string `db:"-"`
+	ID        int64  `json:"id" db:"id"`
+	ProductID int64  `json:"product_id" db:"product_id"`
+	ObjectKey string `json:"object_key" db:"object_key"`
+	IsPrimary bool   `json:"is_primary" db:"is_primary"`
+	URL       string `json:"url" db:"-"`
 }
 
 type ImageData struct {

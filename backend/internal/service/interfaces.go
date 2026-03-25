@@ -24,3 +24,7 @@ type EmbeddingService interface {
 	) ([]float32, error)
 	Close() error
 }
+
+type SearchService interface {
+	SearchSimilar(ctx context.Context, queryVector []float32, topK int) ([]int64, error)
+}

@@ -7,7 +7,10 @@ type MilvusInsertDelete interface {
 	DeleteByImageID(ctx context.Context, imageID int64) error
 }
 
-type MilvusSearch interface {
-	CreateCollection(ctx context.Context) error
+type MilvusSearcher interface {
 	SearchSimilar(ctx context.Context, queryVector []float32, topK int) ([]int64, error)
+}
+
+type MilvusCreater interface {
+	CreateCollection(ctx context.Context) error
 }
