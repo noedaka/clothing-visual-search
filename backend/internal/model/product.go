@@ -8,7 +8,6 @@ type Product struct {
 	CategoryID  int64   `json:"category_id" db:"category_id"`
 }
 
-// Добавить конструкторы?
 type ProductWithImagesData struct {
 	Product           Product     `json:"product"`
 	ProductImagesData []ImageData `json:"images_data"`
