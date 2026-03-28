@@ -101,15 +101,15 @@ func (c *Client) SearchSimilar(ctx context.Context, queryVector []float32, topK 
 
 	searchResults, err := c.client.Search(
 		ctx,
-		collectionName,               // имя коллекции
-		[]string{},                   // пустые партиции
-		"",                           // фильтр (не используем)
-		[]string{"product_id"},       // возвращаемые поля
+		collectionName,         // имя коллекции
+		[]string{},             // пустые партиции
+		"",                     // фильтр (не используем)
+		[]string{"product_id"}, // возвращаемые поля
 		[]entity.Vector{entity.FloatVector(queryVector)}, // векторы запроса
-		"embedding",                  // поле для поиска
-		entity.L2,                    // метрика расстояния
-		topK,                         // количество результатов
-		searchParam,                  // параметры поиска
+		"embedding", // поле для поиска
+		entity.L2,   // метрика расстояния
+		topK,        // количество результатов
+		searchParam, // параметры поиска
 	)
 	if err != nil {
 		return nil, fmt.Errorf("search failed: %w", err)

@@ -4,6 +4,7 @@ go 1.25.7
 
 require (
 	github.com/caarlos0/env/v6 v6.10.1
+	github.com/go-chi/chi/v5 v5.2.5
 	github.com/google/uuid v1.6.0
 	github.com/milvus-io/milvus-sdk-go/v2 v2.4.2
 	github.com/minio/minio-go/v7 v7.0.99

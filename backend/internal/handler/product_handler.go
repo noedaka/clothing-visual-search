@@ -11,7 +11,7 @@ import (
 	"github.com/noedaka/clothing-visual-search/backend/internal/model"
 )
 
-func (h *Handler) AddProductHandler(w http.ResponseWriter, r http.Request) {
+func (h *Handler) AddProductHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseMultipartForm(50 << 20); err != nil {
 		http.Error(w, "file too large or invalid format", http.StatusBadRequest)
 		return
