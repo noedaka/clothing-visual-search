@@ -17,7 +17,3 @@ type ProductWithImages struct {
 	Product       Product `json:"product"`
 	ProductImages []Image `json:"images"`
 }
-
-type AddproductRequest struct {
-	
-}
