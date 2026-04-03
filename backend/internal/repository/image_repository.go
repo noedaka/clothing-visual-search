@@ -113,6 +113,9 @@ func (r *ImageRepo) GetByIDs(ctx context.Context, IDs []int64) ([]model.Image, e
 
 	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, model.ErrNoContent
+		}
 		return nil, err
 	}
 	defer rows.Close()

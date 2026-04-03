@@ -5,7 +5,6 @@ x-logging: &default-logging
     max-file: "3"
 
 services:
-  # ====================== Базы данных ======================
   postgres:
     image: postgres:15-alpine
     container_name: clothing-postgres
@@ -28,7 +27,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ====================== Milvus + зависимости ======================
   etcd:
     image: quay.io/coreos/etcd:v3.5.5
     container_name: clothing-etcd
@@ -96,7 +94,6 @@ services:
     logging: *default-logging
     command: ["milvus", "run", "standalone"]
 
-  # ====================== Сервисы приложения ======================
   backend:
     build:
       context: ./backend

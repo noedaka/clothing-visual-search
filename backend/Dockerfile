@@ -10,7 +10,7 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
 COPY --from=builder /app/main .
-# Копируем миграции (чтобы Go-сервис мог их применять при старте)
+
 COPY --from=builder /app/migrations ./migrations
 
 EXPOSE ${GO_PORT}

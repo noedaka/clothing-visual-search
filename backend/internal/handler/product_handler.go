@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"path/filepath"
@@ -148,6 +149,11 @@ func (h *Handler) SearchByImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	productsWithImages, err := h.productService.GetByIDs(r.Context(), productIDs)
 	if err != nil {
+		if errors.Is(err, model.ErrNoContent) {
+			http.Error(w, "no prodcuts", http.StatusNoContent)
+			return
+		}
+
 		http.Error(w, "db error", http.StatusInternalServerError)
 		return
 	}
@@ -155,6 +161,5 @@ func (h *Handler) SearchByImageHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(productsWithImages); err != nil {
 		http.Error(w, "failed to encode response", http.StatusInternalServerError)
-		return
 	}
 }

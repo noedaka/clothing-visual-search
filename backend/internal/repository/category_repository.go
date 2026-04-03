@@ -51,6 +51,9 @@ func (r *CategoryRepo) List(ctx context.Context) ([]model.Category, error) {
 	)
 
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, model.ErrNoContent
+		}
 		return nil, err
 	}
 	defer rows.Close()

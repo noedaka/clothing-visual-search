@@ -71,6 +71,10 @@ func (r *ProductRepo) GetByIDs(ctx context.Context, IDs []int64) ([]model.Produc
 
 	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, model.ErrNoContent
+		}
+		
 		return nil, err
 	}
 	defer rows.Close()
