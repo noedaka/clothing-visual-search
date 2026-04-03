@@ -18,6 +18,8 @@ import (
 	mlclient "github.com/noedaka/clothing-visual-search/backend/internal/ml-client"
 	"github.com/noedaka/clothing-visual-search/backend/internal/repository"
 	"github.com/noedaka/clothing-visual-search/backend/internal/service"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 func Run() {
@@ -92,7 +94,7 @@ func Run() {
 		})
 	})
 
-		server := &http.Server{
+	server := &http.Server{
 		Addr:    cfg.ServerPort,
 		Handler: r,
 	}

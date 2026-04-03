@@ -1,0 +1,11 @@
+grpcio
+grpcio-tools
+protobuf
+
+torch
+torchvision
+
+Pillow
+
+numpy
+setuptools
