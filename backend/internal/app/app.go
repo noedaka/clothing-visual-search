@@ -119,7 +119,7 @@ func Run() {
 }
 
 func initDatabase(cfg *config.Config) (*sql.DB, error) {
-	db, err := sql.Open("pgx", cfg.DataBaseURL)
+	db, err := sql.Open("pgx", cfg.PostgresURL)
 	if err != nil {
 		return nil, err
 	}

@@ -7,10 +7,13 @@ import (
 )
 
 type Config struct {
-	ServerPort           string `env:"GO_PORT"`
-	MLServiceAddr        string `env:"GRPC_ML_SERVICE_ADDR"`
-	DataBaseURL          string `env:"DATABASE_URL"`
-	MilvusAddr           string `env:"MILVUS_ENDPOINT"`
+	ServerPort    string `env:"GO_PORT"`
+	MLServiceAddr string `env:"GRPC_ML_SERVICE_ADDR"`
+
+	PostgresURL string `env:"DATABASE_URL"`
+
+	MilvusAddr string `env:"MILVUS_ENDPOINT"`
+
 	MinIOAddr            string `env:"MINIO_ENDPOINT"`
 	MinIOAccessKey       string `env:"MINIO_ACCESS_KEY"`
 	MinIOSecretKey       string `env:"MINIO_SECRET_KEY"`

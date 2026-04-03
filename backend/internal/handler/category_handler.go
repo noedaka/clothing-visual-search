@@ -32,7 +32,7 @@ func (h *Handler) ListCategoryHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Error(w, "failed to list categories", http.StatusInternalServerError)
+		http.Error(w, "failed to list categories"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

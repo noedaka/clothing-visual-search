@@ -26,6 +26,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+
+  migrate:
+    image: migrate/migrate:latest
+    container_name: clothing-migrate
+    restart: on-failure:3
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable",
+      "up"
+    ]
+    volumes:
+      - ./backend/migrations:/migrations:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - clothing-network
+    logging: *default-logging
 
   etcd:
     image: quay.io/coreos/etcd:v3.5.5
@@ -104,7 +123,7 @@ services:
       - "${GO_PORT}:${GO_PORT}"
     environment:
       GO_PORT: ${GO_PORT}
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable
+      DATABASE_URL: ${DATABASE_URL}
       GRPC_ML_SERVICE_ADDR: ${GRPC_ML_SERVICE_ADDR}
       MINIO_ENDPOINT: minio:${MINIO_PORT}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
@@ -119,6 +138,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:                 
+        condition: service_completed_successfully
       minio:
         condition: service_healthy
       milvus:
