@@ -26,25 +26,21 @@ func Run() {
 	cfg, err := config.Init()
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
-		return
 	}
 
 	db, err := initDatabase(cfg)
 	if err != nil {
 		log.Fatalf("failed to initialize database: %v", err)
-		return
 	}
 	defer db.Close()
 
 	minioClient, err := minioclient.NewMinIOClient(cfg)
 	if err != nil {
 		log.Fatalf("failed to initialize MinIO client: %v", err)
-		return
 	}
 
 	if err = minioClient.EnsureMinIOBucket(); err != nil {
 		log.Fatalf("failed to ensure MinIO bucket: %v", err)
-		return
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -53,13 +49,11 @@ func Run() {
 	milvusClient, err := milvusclient.NewClient(ctx, cfg.MilvusAddr)
 	if err != nil {
 		log.Fatalf("failed to initialize milvus client: %v", err)
-		return
 	}
 
 	mlClient, err := mlclient.NewClient(cfg.MLServiceAddr)
 	if err != nil {
 		log.Fatalf("failed to initialize ml client: %v", err)
-		return
 	}
 
 	categoryRepo := repository.NewCategoryRepo(db)
@@ -95,7 +89,7 @@ func Run() {
 	})
 
 	server := &http.Server{
-		Addr:    cfg.ServerPort,
+		Addr:    ":" + cfg.ServerPort,
 		Handler: r,
 	}
 
@@ -105,6 +99,7 @@ func Run() {
 		}
 	}()
 
+	log.Printf("Server is listening on %s", cfg.ServerPort)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
