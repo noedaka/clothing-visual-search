@@ -22,6 +22,3 @@ func (s *EmbeddingServ) GetEmbedding(
 	return s.client.GetEmbedding(ctx, image, imageFormat)
 }
 
-func (s *EmbeddingServ) Close() error {
-	return s.client.Close()
-}

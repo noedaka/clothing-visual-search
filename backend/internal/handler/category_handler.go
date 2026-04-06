@@ -17,7 +17,7 @@ func (h *Handler) AddCategoryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.categoryService.Add(r.Context(), category.Name); err != nil {
-		http.Error(w, "failed to add category", http.StatusInternalServerError)
+		http.Error(w, "failed to add category" + err.Error(), http.StatusInternalServerError)
 		return
 	}
 

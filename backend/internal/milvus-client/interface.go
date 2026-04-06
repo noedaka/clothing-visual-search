@@ -8,9 +8,5 @@ type MilvusInsertDelete interface {
 }
 
 type MilvusSearcher interface {
-	SearchSimilar(ctx context.Context, queryVector []float32, topK int) ([]int64, error)
-}
-
-type MilvusCreater interface {
-	CreateCollection(ctx context.Context) error
+	SearchSimilar(ctx context.Context, queryVector []float32, topK int, threshold float64) ([]int64, error)
 }

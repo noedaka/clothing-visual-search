@@ -23,15 +23,43 @@ func NewProductServ(
 }
 
 func (s *ProductServ) Add(ctx context.Context, product *model.ProductWithImagesData) error {
-	id, err := s.productRepo.Add(ctx, &product.Product)
+	tx, err := s.productRepo.BeginTx(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			_ = tx.Rollback()
+		}
+	}()
+
+	prodID, err := s.productRepo.Add(ctx, tx, &product.Product)
 	if err != nil {
 		return err
 	}
 
+	var addedImages []struct {
+		imgID     int64
+		objectKey string
+	}
+
 	for _, image := range product.ProductImagesData {
-		if err = s.imageRepo.Add(ctx, id, &image); err != nil {
+		imgID, objectKey, err := s.imageRepo.Add(ctx, tx, prodID, &image)
+		if err != nil {
+			for _, added := range addedImages {
+				_ = s.imageRepo.DeleteByID(ctx, added.imgID, added.objectKey)
+			}
 			return err
 		}
+
+		addedImages = append(addedImages, struct {
+			imgID     int64
+			objectKey string
+		}{imgID: imgID, objectKey: objectKey})
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
 	}
 
 	return nil

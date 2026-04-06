@@ -14,6 +14,6 @@ func NewSearchServ(client milvusclient.MilvusSearcher) *SearchServ {
 	return &SearchServ{client: client}
 }
 
-func (s *SearchServ) SearchSimilar(ctx context.Context, queryVector []float32, topK int) ([]int64, error) {
-	return s.client.SearchSimilar(ctx, queryVector, topK)
+func (s *SearchServ) SearchSimilar(ctx context.Context, queryVector []float32, topK int, threshold float64) ([]int64, error) {
+	return s.client.SearchSimilar(ctx, queryVector, topK, threshold)
 }

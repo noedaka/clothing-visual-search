@@ -22,9 +22,13 @@ type EmbeddingService interface {
 		image []byte,
 		imageFormat string,
 	) ([]float32, error)
-	Close() error
 }
 
 type SearchService interface {
-	SearchSimilar(ctx context.Context, queryVector []float32, topK int) ([]int64, error)
+	SearchSimilar(
+		ctx context.Context,
+		queryVector []float32,
+		topK int,
+		threshold float64,
+	) ([]int64, error)
 }

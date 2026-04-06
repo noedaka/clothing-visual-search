@@ -33,7 +33,7 @@ func (r *CategoryRepo) Add(ctx context.Context, category string) error {
 	}()
 
 	_, err = tx.ExecContext(ctx,
-		"INSERT INTO categories (name) VALUES $1",
+		"INSERT INTO categories (name) VALUES ($1)",
 		category,
 	)
 

@@ -14,6 +14,9 @@ type Config struct {
 
 	MilvusAddr string `env:"MILVUS_ENDPOINT"`
 
+	TopK      int     `env:"TOP_K"`
+	Threshold float64 `env:"THRESHOLD"`
+
 	MinIOAddr            string `env:"MINIO_ENDPOINT"`
 	MinIOAccessKey       string `env:"MINIO_ACCESS_KEY"`
 	MinIOSecretKey       string `env:"MINIO_SECRET_KEY"`

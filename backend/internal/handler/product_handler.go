@@ -72,7 +72,7 @@ func (h *Handler) AddProductHandler(w http.ResponseWriter, r *http.Request) {
 
 		embedding, err := h.embeddingService.GetEmbedding(r.Context(), imagesByte, format)
 		if err != nil {
-			http.Error(w, "error getting embedding", http.StatusInternalServerError)
+			http.Error(w, "error getting embedding"+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
@@ -80,7 +80,7 @@ func (h *Handler) AddProductHandler(w http.ResponseWriter, r *http.Request) {
 			File:        bytes.NewReader(imagesByte),
 			FileSize:    fileHeader.Size,
 			Filename:    fileHeader.Filename,
-			ContentType: fileHeader.Header.Get("Contetn-Type"),
+			ContentType: fileHeader.Header.Get("Content-Type"),
 			IsPrimary:   i == 0,
 			Embedding:   embedding,
 		}
@@ -95,7 +95,7 @@ func (h *Handler) AddProductHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := h.productService.Add(r.Context(), &req)
 	if err != nil {
-		http.Error(w, "failed to create product", http.StatusInternalServerError)
+		http.Error(w, "failed to create product" + err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -134,10 +134,9 @@ func (h *Handler) SearchByImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	topK := 10
-	productIDs, err := h.searchService.SearchSimilar(r.Context(), embedding, topK)
+	productIDs, err := h.searchService.SearchSimilar(r.Context(), embedding, h.cfg.TopK, h.cfg.Threshold)
 	if err != nil {
-		http.Error(w, "search failed", http.StatusInternalServerError)
+		http.Error(w, "search failed" + err.Error(), http.StatusInternalServerError)
 		return
 	}
 

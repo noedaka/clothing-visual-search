@@ -55,6 +55,7 @@ func Run() {
 	if err != nil {
 		log.Fatalf("failed to initialize ml client: %v", err)
 	}
+	defer mlClient.Close()
 
 	categoryRepo := repository.NewCategoryRepo(db)
 	productRepo := repository.NewProductRepo(db)
@@ -70,6 +71,7 @@ func Run() {
 		categoryService,
 		embeddingService,
 		searchService,
+		*cfg,
 	)
 
 	r := chi.NewRouter()
@@ -83,7 +85,7 @@ func Run() {
 
 			r.Route("/product", func(r chi.Router) {
 				r.Post("/", handler.AddProductHandler)
-				r.Post("/seacrh", handler.SearchByImageHandler)
+				r.Post("/search", handler.SearchByImageHandler)
 			})
 		})
 	})

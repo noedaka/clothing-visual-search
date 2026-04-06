@@ -124,6 +124,8 @@ services:
     environment:
       GO_PORT: ${GO_PORT}
       DATABASE_URL: ${DATABASE_URL}
+      TOP_K: ${TOP_K}
+      THRESHOLD: ${THRESHOLD}
       GRPC_ML_SERVICE_ADDR: ${GRPC_ML_SERVICE_ADDR}
       MINIO_ENDPOINT: minio:${MINIO_PORT}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}

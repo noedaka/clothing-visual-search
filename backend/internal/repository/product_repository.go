@@ -3,9 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/noedaka/clothing-visual-search/backend/internal/model"
@@ -19,21 +17,9 @@ func NewProductRepo(db *sql.DB) *ProductRepo {
 	return &ProductRepo{db: db}
 }
 
-func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int64, error) {
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return 0, err
-	}
-	defer func() {
-		if err := tx.Rollback(); err != nil {
-			if !errors.Is(err, sql.ErrTxDone) {
-				log.Printf("failed to rollback the transaction: %v", err)
-			}
-		}
-	}()
-
+func (r *ProductRepo) Add(ctx context.Context, tx *sql.Tx, product *model.Product) (int64, error) {
 	var id int64
-	err = tx.QueryRowContext(ctx,
+	err := tx.QueryRowContext(ctx,
 		`INSERT INTO products 
 		(name, description, price, category_id)
 		VALUES ($1, $2, $3, $4) RETURNING id`,
@@ -41,10 +27,6 @@ func (r *ProductRepo) Add(ctx context.Context, product *model.Product) (int64, e
 	).Scan(&id)
 
 	if err != nil {
-		return 0, err
-	}
-
-	if err = tx.Commit(); err != nil {
 		return 0, err
 	}
 
@@ -93,4 +75,8 @@ func (r *ProductRepo) GetByIDs(ctx context.Context, IDs []int64) ([]model.Produc
 	}
 
 	return products, nil
+}
+
+func (r *ProductRepo) BeginTx(ctx context.Context) (*sql.Tx, error) {
+	return r.db.BeginTx(ctx, nil)
 }
