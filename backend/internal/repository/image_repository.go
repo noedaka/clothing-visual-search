@@ -3,26 +3,23 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"path/filepath"
 
-	"github.com/google/uuid"
-	"github.com/minio/minio-go/v7"
 	"github.com/noedaka/clothing-visual-search/backend/internal/config"
 	milvusclient "github.com/noedaka/clothing-visual-search/backend/internal/milvus-client"
+	minioclient "github.com/noedaka/clothing-visual-search/backend/internal/minio-client"
 	"github.com/noedaka/clothing-visual-search/backend/internal/model"
 )
 
 type ImageRepo struct {
 	db           *sql.DB
-	minioClient  *minio.Client
+	minioClient  minioclient.MinIOClient
 	milvusClient milvusclient.MilvusInsertDelete
 	cfg          *config.Config
 }
 
 func NewImageRepo(
 	db *sql.DB,
-	minioClient *minio.Client,
+	minioClient minioclient.MinIOClient,
 	milvusClient milvusclient.MilvusInsertDelete,
 	cfg *config.Config,
 ) *ImageRepo {
@@ -35,11 +32,9 @@ func (r *ImageRepo) Add(
 	productID int64,
 	imageData *model.ImageData,
 ) (int64, string, error) {
-	objectKey := r.generateObjectKey(productID, imageData.Filename)
+	objectKey := r.minioClient.GenerateObjectKey(productID, imageData.Filename)
 
-	_, err := r.minioClient.PutObject(ctx, r.cfg.MinIOBucket, objectKey,
-		imageData.File, imageData.FileSize,
-		minio.PutObjectOptions{ContentType: imageData.ContentType})
+	err := r.minioClient.PutObject(ctx, objectKey, imageData)
 	if err != nil {
 		return 0, "", err
 	}
@@ -48,7 +43,7 @@ func (r *ImageRepo) Add(
 	milvusInserted := false
 	defer func() {
 		if err != nil {
-			_ = r.minioClient.RemoveObject(ctx, r.cfg.MinIOBucket, objectKey, minio.RemoveObjectOptions{})
+			_ = r.minioClient.RemoveObject(ctx, objectKey)
 			if milvusInserted {
 				_ = r.milvusClient.DeleteByImageID(ctx, imageID)
 			}
@@ -100,7 +95,7 @@ func (r *ImageRepo) GetByIDs(ctx context.Context, IDs []int64) ([]model.Image, e
 			return nil, err
 		}
 
-		img.URL = r.getPublicURL(img.ObjectKey)
+		img.URL = r.minioClient.GetPublicURL(img.ObjectKey)
 		images = append(images, img)
 	}
 	if err = rows.Err(); err != nil {
@@ -111,19 +106,8 @@ func (r *ImageRepo) GetByIDs(ctx context.Context, IDs []int64) ([]model.Image, e
 }
 
 func (r *ImageRepo) DeleteByID(ctx context.Context, ID int64, objectKey string) error {
-	_ = r.minioClient.RemoveObject(ctx, r.cfg.MinIOBucket, objectKey, minio.RemoveObjectOptions{})
+	_ = r.minioClient.RemoveObject(ctx, objectKey)
 	_ = r.milvusClient.DeleteByImageID(ctx, ID)
 
 	return nil
-}
-
-func (r ImageRepo) generateObjectKey(productID int64, filename string) string {
-	name := filepath.Base(filename)
-	uid := uuid.New().String()
-
-	return fmt.Sprintf("products/%d/%s_%s", productID, uid, name)
-}
-
-func (r *ImageRepo) getPublicURL(objectKey string) string {
-	return fmt.Sprintf("%s/%s/%s", r.cfg.MinIOExternalBaseURL, r.cfg.MinIOBucket, objectKey)
 }

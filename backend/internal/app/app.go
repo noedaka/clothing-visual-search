@@ -39,10 +39,6 @@ func Run() {
 		log.Fatalf("failed to initialize MinIO client: %v", err)
 	}
 
-	if err = minioClient.EnsureMinIOBucket(); err != nil {
-		log.Fatalf("failed to ensure MinIO bucket: %v", err)
-	}
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -59,7 +55,7 @@ func Run() {
 
 	categoryRepo := repository.NewCategoryRepo(db)
 	productRepo := repository.NewProductRepo(db)
-	imageRepo := repository.NewImageRepo(db, minioClient.Client, milvusClient, cfg)
+	imageRepo := repository.NewImageRepo(db, minioClient, milvusClient, cfg)
 
 	categoryService := service.NewCategoryServ(categoryRepo)
 	productService := service.NewProductServ(productRepo, imageRepo)
