@@ -28,7 +28,6 @@ func NewClient(ctx context.Context, addr string) (*Client, error) {
 	return &Client{client: c}, nil
 }
 
-// InsertEmbedding вставляет эмбеддинг для конкретного изображения
 func (c *Client) InsertEmbedding(ctx context.Context, imageID, productID int64, embedding []float32) error {
 	collectionName := "product_images"
 
@@ -61,14 +60,14 @@ func (c *Client) SearchSimilar(ctx context.Context, queryVector []float32, topK 
 
 	searchResults, err := c.client.Search(
 		ctx,
-		collectionName,         // имя коллекции
-		[]string{},             // partitions (пусто = все)
-		"",                     // expr — скалярный фильтр (не используем)
-		[]string{"product_id"}, // возвращаемые поля
+		collectionName,
+		[]string{},
+		"",
+		[]string{"product_id"},
 		[]entity.Vector{entity.FloatVector(queryVector)},
-		"embedding", // поле с вектором
-		entity.L2,   // метрика расстояния
-		topK,        // максимальное количество результатов
+		"embedding",
+		entity.L2,
+		topK,
 		searchParam,
 	)
 	if err != nil {
@@ -101,7 +100,6 @@ func (c *Client) DeleteByImageID(ctx context.Context, imageID int64) error {
 	}
 	return nil
 }
-
 
 func createCollection(c client.Client, ctx context.Context) error {
 	collectionName := "product_images"

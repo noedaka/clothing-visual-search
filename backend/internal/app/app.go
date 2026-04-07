@@ -13,6 +13,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/noedaka/clothing-visual-search/backend/internal/config"
 	"github.com/noedaka/clothing-visual-search/backend/internal/handler"
+	"github.com/noedaka/clothing-visual-search/backend/internal/middleware"
 	milvusclient "github.com/noedaka/clothing-visual-search/backend/internal/milvus-client"
 	minioclient "github.com/noedaka/clothing-visual-search/backend/internal/minio-client"
 	mlclient "github.com/noedaka/clothing-visual-search/backend/internal/ml-client"
@@ -73,6 +74,7 @@ func Run() {
 	r := chi.NewRouter()
 
 	r.Route("/", func(r chi.Router) {
+		r.Use(middleware.CorsMiddleware)
 		r.Route("/api", func(r chi.Router) {
 			r.Route("/category", func(r chi.Router) {
 				r.Post("/", handler.AddCategoryHandler)
