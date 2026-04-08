@@ -77,7 +77,7 @@ export function Categories() {
         <h2>Existing Categories</h2>
         {loading ? (
           <p className="loading">Loading categories...</p>
-        ) : categories.length === 0 ? (
+        ) : !categories || categories.length === 0 ? (
           <p className="empty">No categories found. Add one above!</p>
         ) : (
           <ul className="categories-list">

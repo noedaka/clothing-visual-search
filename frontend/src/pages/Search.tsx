@@ -1,35 +1,78 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchByImage } from '../api';
 import type { ProductWithImages } from '../types';
 import './Search.css';
 
+const SEARCH_STATE_KEY = 'visualSearchState';
+
 export function Search() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewBase64, setPreviewBase64] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState<ProductWithImages[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(SEARCH_STATE_KEY);
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        setResults(state.results || []);
+        setHasSearched(state.hasSearched || false);
+        if (state.previewBase64) {
+          setPreviewUrl(state.previewBase64);
+          setPreviewBase64(state.previewBase64);
+        }
+      } catch (e) {
+        console.error('Failed to restore search state', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (results.length > 0 || previewBase64) {
+      const state = {
+        results,
+        previewBase64,
+        hasSearched,
+      };
+      sessionStorage.setItem(SEARCH_STATE_KEY, JSON.stringify(state));
+    }
+  }, [results, previewBase64, hasSearched]);
 
   const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedImage(file);
-      setPreviewUrl(URL.createObjectURL(file));
+      const blobUrl = URL.createObjectURL(file);
+      setPreviewUrl(blobUrl);
       setResults([]);
       setError(null);
+      setHasSearched(false);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewBase64(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   }, []);
 
   const clearImage = useCallback(() => {
-    if (previewUrl) {
+    if (previewUrl && previewUrl.startsWith('blob:')) {
       URL.revokeObjectURL(previewUrl);
     }
     setSelectedImage(null);
     setPreviewUrl(null);
+    setPreviewBase64(null);
     setResults([]);
     setError(null);
+    setHasSearched(false);
+    sessionStorage.removeItem(SEARCH_STATE_KEY);
   }, [previewUrl]);
 
   async function handleSearch(e: React.FormEvent) {
@@ -41,8 +84,10 @@ export function Search() {
       setError(null);
       const data = await searchByImage(selectedImage);
       setResults(data);
+      setHasSearched(true);
     } catch {
       setError('Search failed. Please try again.');
+      setHasSearched(true);
     } finally {
       setSearching(false);
     }
@@ -95,12 +140,8 @@ export function Search() {
           )}
         </div>
 
-        {previewUrl && (
-          <button
-            type="submit"
-            disabled={searching}
-            className="search-btn"
-          >
+        {selectedImage && previewUrl && (
+          <button type="submit" disabled={searching} className="search-btn">
             {searching ? 'Searching...' : 'Search Similar Items'}
           </button>
         )}
@@ -112,7 +153,6 @@ export function Search() {
         <div className="results-section">
           <h2>Search Results</h2>
           <p className="results-count">Found {results.length} similar items</p>
-
           <div className="results-grid">
             {results.map((item, index) => (
               <div
@@ -138,7 +178,7 @@ export function Search() {
         </div>
       )}
 
-      {results.length === 0 && !searching && selectedImage && (
+      {results.length === 0 && !searching && hasSearched && (
         <div className="no-results">
           <p>No similar items found. Try a different image.</p>
         </div>
