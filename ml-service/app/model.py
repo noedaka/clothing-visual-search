@@ -1,5 +1,6 @@
 import torch
 import torchvision.models as models
+import torch.nn.functional as F
 from . import config
 
 class EmbeddingModel:
@@ -22,6 +23,7 @@ class EmbeddingModel:
         with torch.no_grad():
             image_tensor = image_tensor.to(self.device)
             embedding = self.model(image_tensor)
-            embedding = embedding.cpu().squeeze().numpy().tolist()
-            
+            embedding = embedding.squeeze()
+            embedding = F.normalize(embedding, p=2, dim=0)
+            embedding = embedding.cpu().numpy().tolist()
         return embedding

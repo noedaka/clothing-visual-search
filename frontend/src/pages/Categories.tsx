@@ -22,7 +22,7 @@ export function Categories() {
       setCategories(data);
       setError(null);
     } catch {
-      setError('Failed to load categories');
+      setError('Не удалось загрузить категории');
     } finally {
       setLoading(false);
     }
@@ -36,11 +36,11 @@ export function Categories() {
       setSubmitting(true);
       await addCategory(newCategoryName.trim());
       setNewCategoryName('');
-      setSuccess('Category added successfully');
+      setSuccess('Категория успешно добавлена');
       await loadCategories();
       setTimeout(() => setSuccess(null), 3000);
     } catch {
-      setError('Failed to add category');
+      setError('Не удалось добавить категорию');
     } finally {
       setSubmitting(false);
     }
@@ -48,24 +48,24 @@ export function Categories() {
 
   return (
     <div className="categories-page">
-      <h1>Categories</h1>
+      <h1>Категории</h1>
 
       <div className="add-category-section">
-        <h2>Add New Category</h2>
+        <h2>Добавить категорию</h2>
         <form onSubmit={handleSubmit} className="category-form">
           <div className="form-group">
-            <label htmlFor="categoryName">Category Name</label>
+            <label htmlFor="categoryName">Название категории</label>
             <input
               type="text"
               id="categoryName"
               value={newCategoryName}
               onChange={(e) => setNewCategoryName(e.target.value)}
-              placeholder="Enter category name"
+              placeholder="Введите название категории"
               required
             />
           </div>
           <button type="submit" disabled={submitting || !newCategoryName.trim()}>
-            {submitting ? 'Adding...' : 'Add Category'}
+            {submitting ? 'Добавление...' : 'Добавить'}
           </button>
         </form>
       </div>
@@ -74,17 +74,17 @@ export function Categories() {
       {success && <div className="alert success">{success}</div>}
 
       <div className="categories-list-section">
-        <h2>Existing Categories</h2>
+        <h2>Существующие категории</h2>
         {loading ? (
-          <p className="loading">Loading categories...</p>
+          <p className="loading">Загрузка категорий...</p>
         ) : !categories || categories.length === 0 ? (
-          <p className="empty">No categories found. Add one above!</p>
+          <p className="empty">Категории не найдены. Добавьте первую!</p>
         ) : (
           <ul className="categories-list">
             {categories.map((category) => (
               <li key={category.id} className="category-item">
                 <span className="category-name">{category.name}</span>
-                <span className="category-id">ID: {category.id}</span>
+                <span className="category-id">ИД: {category.id}</span>
               </li>
             ))}
           </ul>

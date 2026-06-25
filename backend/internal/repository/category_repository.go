@@ -17,11 +17,10 @@ func NewCategoryRepo(db *sql.DB) *CategoryRepo {
 	return &CategoryRepo{db: db}
 }
 
-
 func (r *CategoryRepo) Add(ctx context.Context, category string) error {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
-		return err 
+		return err
 	}
 
 	defer func() {

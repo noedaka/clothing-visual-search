@@ -27,7 +27,7 @@
 
 .form-group label {
   font-weight: 500;
-  color: #ccc;
+  color: #555;
 }
 
 .required {
@@ -39,9 +39,9 @@
 .form-group textarea {
   padding: 0.75rem;
   border-radius: 8px;
-  border: 1px solid #444;
-  background: #2a2a2a;
-  color: #fff;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #1a1a1a;
   font-size: 1rem;
   font-family: inherit;
 }
@@ -81,7 +81,7 @@
   aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid #444;
+  border: 2px solid #ddd;
 }
 
 .preview-item.primary {
@@ -171,23 +171,6 @@
   color: #51cf66;
 }
 
-@media (prefers-color-scheme: light) {
-  .form-group label {
-    color: #555;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: #fff;
-    border-color: #ddd;
-    color: #1a1a1a;
-  }
-
-  .preview-item {
-    border-color: #ddd;
-  }
-}
 
 @media (max-width: 600px) {
   .form-row {

@@ -50,23 +50,29 @@ func (c *Client) InsertEmbedding(ctx context.Context, imageID, productID int64, 
 func (c *Client) SearchSimilar(ctx context.Context, queryVector []float32, topK int, threshold float64) ([]int64, error) {
 	collectionName := "product_images"
 
+	// Создание параметров поиска для индекса IVF_FLAT.
+	// Число 16 — nprobe: количество просматриваемых кластеров.
 	searchParam, err := entity.NewIndexIvfFlatSearchParam(16)
 	if err != nil {
 		return nil, fmt.Errorf("create search param failed: %w", err)
 	}
 
+	// Установка радиуса: верхняя граница L2-расстояния.
 	searchParam.AddRadius(threshold)
+	// Нижняя граница диапазона (0 - минимально возможное расстояние).
 	searchParam.AddRangeFilter(0.0)
 
+	// Запрос к Milvus: поиск по векторному полю "embedding",
+	// возврат поля "product_id", мера L2, ограничение topK.
 	searchResults, err := c.client.Search(
 		ctx,
 		collectionName,
-		[]string{},
-		"",
-		[]string{"product_id"},
+		[]string{},             // партиции (пусто - все)
+		"",                     // выражение фильтрации (нет)
+		[]string{"product_id"}, // выходные поля
 		[]entity.Vector{entity.FloatVector(queryVector)},
-		"embedding",
-		entity.L2,
+		"embedding", // целевое векторное поле
+		entity.L2,   // метрика расстояния
 		topK,
 		searchParam,
 	)
@@ -74,6 +80,7 @@ func (c *Client) SearchSimilar(ctx context.Context, queryVector []float32, topK 
 		return nil, fmt.Errorf("search failed: %w", err)
 	}
 
+	// Сбор уникальных product_id через множество.
 	productIDSet := make(map[int64]struct{})
 	for _, result := range searchResults {
 		col := result.Fields.GetColumn("product_id")
@@ -84,6 +91,7 @@ func (c *Client) SearchSimilar(ctx context.Context, queryVector []float32, topK 
 		}
 	}
 
+	// Преобразование множества в слайс.
 	productIDs := make([]int64, 0, len(productIDSet))
 	for pid := range productIDSet {
 		productIDs = append(productIDs, pid)

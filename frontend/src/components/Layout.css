@@ -10,14 +10,14 @@
   justify-content: space-between;
   padding: 0 2rem;
   height: 64px;
-  background-color: #1a1a1a;
-  border-bottom: 1px solid #333;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .nav-brand {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #fff;
+  color: #1a1a1a;
 }
 
 .nav-links {
@@ -29,7 +29,7 @@
 }
 
 .nav-links a {
-  color: #ccc;
+  color: #666;
   text-decoration: none;
   padding: 0.5rem 0;
   transition: color 0.2s;
@@ -37,7 +37,7 @@
 }
 
 .nav-links a:hover {
-  color: #fff;
+  color: #1a1a1a;
 }
 
 .nav-links a.active {
@@ -52,23 +52,4 @@
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
-}
-
-@media (prefers-color-scheme: light) {
-  .navbar {
-    background-color: #fff;
-    border-bottom-color: #e0e0e0;
-  }
-
-  .nav-brand {
-    color: #1a1a1a;
-  }
-
-  .nav-links a {
-    color: #666;
-  }
-
-  .nav-links a:hover {
-    color: #1a1a1a;
-  }
 }

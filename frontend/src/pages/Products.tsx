@@ -31,7 +31,7 @@ export function Products() {
         setProduct((p) => ({ ...p, category_id: data[0].id }));
       }
     } catch {
-      setError('Failed to load categories');
+      setError('Не удалось загрузить категории');
     } finally {
       setLoading(false);
     }
@@ -58,12 +58,12 @@ export function Products() {
     e.preventDefault();
 
     if (!product.name || (product.price || 0) <= 0 || (product.category_id || 0) <= 0) {
-      setError('Please fill in all required fields');
+      setError('Заполните все обязательные поля');
       return;
     }
 
     if (images.length === 0) {
-      setError('Please add at least one image');
+      setError('Добавьте хотя бы одно изображение');
       return;
     }
 
@@ -81,7 +81,7 @@ export function Products() {
 
       await addProduct(productData, images);
 
-      setSuccess('Product added successfully');
+      setSuccess('Товар успешно добавлен');
       setProduct({
         name: '',
         description: '',
@@ -94,44 +94,44 @@ export function Products() {
 
       setTimeout(() => setSuccess(null), 3000);
     } catch {
-      setError('Failed to add product');
+      setError('Не удалось добавить товар');
     } finally {
       setSubmitting(false);
     }
   }
 
   if (loading) {
-    return <p className="loading">Loading...</p>;
+    return <p className="loading">Загрузка...</p>;
   }
 
   return (
     <div className="products-page">
-      <h1>Add Product</h1>
+      <h1>Добавить товар</h1>
 
       {categories.length === 0 ? (
         <div className="alert error">
-          Please add at least one category before adding products.
+          Сначала добавьте хотя бы одну категорию.
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="product-form">
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="name">
-                Product Name <span className="required">*</span>
+                Название <span className="required">*</span>
               </label>
               <input
                 type="text"
                 id="name"
                 value={product.name}
                 onChange={(e) => setProduct({ ...product, name: e.target.value })}
-                placeholder="Enter product name"
+                placeholder="Введите название товара"
                 required
               />
             </div>
 
             <div className="form-group">
               <label htmlFor="price">
-                Price <span className="required">*</span>
+                Цена <span className="required">*</span>
               </label>
               <input
                 type="number"
@@ -147,7 +147,7 @@ export function Products() {
 
           <div className="form-group">
             <label htmlFor="category">
-              Category <span className="required">*</span>
+              Категория <span className="required">*</span>
             </label>
             <select
               id="category"
@@ -164,19 +164,19 @@ export function Products() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">Описание</label>
             <textarea
               id="description"
               rows={4}
               value={product.description}
               onChange={(e) => setProduct({ ...product, description: e.target.value })}
-              placeholder="Enter product description"
+              placeholder="Введите описание товара"
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="images">
-              Images <span className="required">*</span>
+              Фотографии <span className="required">*</span>
             </label>
             <input
               type="file"
@@ -186,7 +186,7 @@ export function Products() {
               onChange={handleImageChange}
               className="file-input"
             />
-            <small className="hint">First image will be set as primary</small>
+            <small className="hint">Первое фото будет главным</small>
           </div>
 
           {imagePreviewUrls.length > 0 && (
@@ -194,7 +194,7 @@ export function Products() {
               {imagePreviewUrls.map((url, index) => (
                 <div key={index} className={`preview-item ${index === 0 ? 'primary' : ''}`}>
                   <img src={url} alt={`Preview ${index + 1}`} />
-                  {index === 0 && <span className="primary-badge">Primary</span>}
+                  {index === 0 && <span className="primary-badge">Главное</span>}
                   <button
                     type="button"
                     className="remove-btn"
@@ -211,7 +211,7 @@ export function Products() {
           {success && <div className="alert success">{success}</div>}
 
           <button type="submit" disabled={submitting} className="submit-btn">
-            {submitting ? 'Adding Product...' : 'Add Product'}
+            {submitting ? 'Добавление...' : 'Добавить товар'}
           </button>
         </form>
       )}

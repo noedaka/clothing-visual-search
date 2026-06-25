@@ -9,21 +9,21 @@ export function Layout() {
   return (
     <div className="layout">
       <nav className="navbar">
-        <div className="nav-brand">Clothing Visual Search</div>
+        <div className="nav-brand">Визуальный поиск одежды</div>
         <ul className="nav-links">
           <li>
             <Link to="/" className={isActive('/') ? 'active' : ''}>
-              Search
+              Поиск
             </Link>
           </li>
           <li>
             <Link to="/categories" className={isActive('/categories') ? 'active' : ''}>
-              Categories
+              Категории
             </Link>
           </li>
           <li>
             <Link to="/products" className={isActive('/products') ? 'active' : ''}>
-              Products
+              Товары
             </Link>
           </li>
         </ul>

@@ -86,7 +86,7 @@ export function Search() {
       setResults(data);
       setHasSearched(true);
     } catch {
-      setError('Search failed. Please try again.');
+      setError('Поиск не удался. Попробуйте ещё раз.');
       setHasSearched(true);
     } finally {
       setSearching(false);
@@ -99,8 +99,8 @@ export function Search() {
 
   return (
     <div className="search-page">
-      <h1>Visual Search</h1>
-      <p className="subtitle">Upload an image to find similar clothing items</p>
+      <h1>Визуальный поиск</h1>
+      <p className="subtitle">Загрузите фотографию, чтобы найти похожие товары</p>
 
       <form onSubmit={handleSearch} className="search-form">
         <div className="upload-section">
@@ -126,15 +126,15 @@ export function Search() {
                   <polyline points="17 8 12 3 7 8" />
                   <line x1="12" y1="3" x2="12" y2="15" />
                 </svg>
-                <p>Click to upload or drag and drop</p>
-                <small>Supports: JPG, PNG, WebP</small>
+                <p>Нажмите для загрузки или перетащите файл</p>
+                <small>Форматы: JPG, PNG, WebP</small>
               </div>
             </label>
           ) : (
             <div className="preview-section">
               <img src={previewUrl} alt="Search preview" />
               <button type="button" className="clear-btn" onClick={clearImage}>
-                Remove image
+                Удалить фото
               </button>
             </div>
           )}
@@ -142,7 +142,7 @@ export function Search() {
 
         {selectedImage && previewUrl && (
           <button type="submit" disabled={searching} className="search-btn">
-            {searching ? 'Searching...' : 'Search Similar Items'}
+            {searching ? 'Поиск...' : 'Найти похожие товары'}
           </button>
         )}
       </form>
@@ -151,8 +151,8 @@ export function Search() {
 
       {results.length > 0 && (
         <div className="results-section">
-          <h2>Search Results</h2>
-          <p className="results-count">Found {results.length} similar items</p>
+          <h2>Результаты поиска</h2>
+          <p className="results-count">Найдено {results.length} похожих товаров</p>
           <div className="results-grid">
             {results.map((item, index) => (
               <div
@@ -164,7 +164,7 @@ export function Search() {
                   {item.images.length > 0 ? (
                     <img src={item.images[0].url} alt={item.product.name} />
                   ) : (
-                    <div className="no-image">No image</div>
+                    <div className="no-image">Фото отсутствует</div>
                   )}
                   <span className="match-rank">#{index + 1}</span>
                 </div>
@@ -180,7 +180,7 @@ export function Search() {
 
       {results.length === 0 && !searching && hasSearched && (
         <div className="no-results">
-          <p>No similar items found. Try a different image.</p>
+          <p>Похожих товаров не найдено. Попробуйте другое фото.</p>
         </div>
       )}
     </div>

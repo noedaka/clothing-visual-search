@@ -16,9 +16,9 @@ export function ProductDetails() {
     return (
       <div className="product-details-page">
         <div className="error-state">
-          <p>No product selected</p>
+          <p>Товар не выбран</p>
           <button onClick={() => navigate('/')} className="back-btn">
-            Go to Search
+            Перейти к поиску
           </button>
         </div>
       </div>
@@ -31,7 +31,7 @@ export function ProductDetails() {
   return (
     <div className="product-details-page">
       <button onClick={() => navigate(-1)} className="back-link">
-        ← Back to results
+        ← Назад к результатам
       </button>
 
       <div className="product-content">
@@ -43,7 +43,7 @@ export function ProductDetails() {
               className="main-image"
             />
           ) : (
-            <div className="no-image-large">No image available</div>
+            <div className="no-image-large">Фото отсутствует</div>
           )}
 
           {images.length > 1 && (
@@ -66,17 +66,17 @@ export function ProductDetails() {
 
           {product.description && (
             <div className="description-section">
-              <h2>Description</h2>
+              <h2>Описание</h2>
               <p>{product.description}</p>
             </div>
           )}
 
           <div className="details-section">
-            <h2>Details</h2>
+            <h2>Подробности</h2>
             <dl>
-              <dt>Product ID</dt>
+              <dt>ИД товара</dt>
               <dd>{product.id}</dd>
-              <dt>Category ID</dt>
+              <dt>ИД категории</dt>
               <dd>{product.category_id}</dd>
             </dl>
           </div>
